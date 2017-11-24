@@ -1,5 +1,6 @@
 import urllib
 import requests
+import time
 
 DBURL = "http://rest.kegg.jp/link/pathway/hsa"
 CONVERT_URL = "http://www.uniprot.org/uploadlists/"
@@ -36,3 +37,12 @@ def kegg_to_uniprot(kegg_id):
             result.append(a[2])
     return result
         
+def kegg_list_to_uniprot(kegg_id_list):
+    result = {}
+    for kegg_id in kegg_id_list:
+        res = kegg_to_uniprot(kegg_id)
+        result[kegg_id] = res
+        time.sleep(0.1)
+    return result
+
+    
