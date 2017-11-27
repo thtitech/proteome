@@ -79,7 +79,7 @@ class UniprotHTMLParser(HTMLParser):
             pdb_id = chain_name.split("_")[0]
             resolution = self.resolution_map[pdb_id]
             start_res, end_res = self.position_map[pdb_id]
-            result.append(Chain(pdb_id, resolution, start_res, end_res))
+            result.append(Chain(chain_name, resolution, start_res, end_res))
         return result
 
 class UniprotConverter:
