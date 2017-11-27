@@ -1,5 +1,6 @@
 from html.parser import HTMLParser
 from chain import Chain 
+import requests
 
 PREFIX = "http://www.uniprot.org/uniprot/"
 
@@ -42,6 +43,7 @@ class UniprotHTMLParser(HTMLParser):
             try:
                 self.resolution_map[self.current_pdb_id] = float(data)
             except:
+                self.resolution_map[self.current_pdb_id] = -1
                 return
         if self.is_useful and (self.count_td == 4):
             chains = data.split("/")
@@ -79,3 +81,14 @@ class UniprotHTMLParser(HTMLParser):
             start_res, end_res = self.position_map[pdb_id]
             result.append(Chain(pdb_id, resolution, start_res, end_res))
         return result
+
+class UniprotConverter:
+    def __init__(self, uniprot_id):
+        self.parser = UniprotHTMLParser(uniprot_id)
+
+    def get_chain_list(self):
+        r = requests.get(self.parser.get_url())
+        self.parser.feed(r.text)
+        self.parser.close()
+        return self.parser.get_chain_list()
+        

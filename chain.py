@@ -11,3 +11,5 @@ class Chain:
     def get_length(self):
         return (self.end_res - self.start_res + 1)
 
+    def __str__(self):
+        return self.chain_name

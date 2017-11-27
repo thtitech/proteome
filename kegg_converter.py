@@ -13,8 +13,11 @@ class PathwayConverter:
     def make_database(self):
         r = requests.get(DBURL)
         for line in r.text.split("\n"):
-            gene_id, pathway_id = line.split("\t")
-            pathway_id = pathway_id.split(":")
+            array = line.split("\t")
+            if len(array) != 2:
+                continue
+            gene_id, pathway_id = array
+            pathway_id = pathway_id.split(":")[1]
             if pathway_id not in self.database:
                 self.database[pathway_id] = []
             self.database[pathway_id].append(gene_id)
