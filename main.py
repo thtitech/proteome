@@ -4,6 +4,7 @@ from uniprot_parser import *
 from ppi_parser import *
 import sys
 import time
+import itertools
 
 ### Output Style
 # pathway, kegg_id, uniprot_id, pdbid
@@ -62,10 +63,11 @@ def main(args):
             print("End search structure in pathway: " + pathway_id)
             print("Start search interaction in pathway: " + pathway_id)
             inf.write("#" + pathway_id + "\n")
-            for p1 in set(uniprot_list_in_pathway):
-                for p2 in set(uniprot_list_in_pathway):
-                    if ((p1, p2) in ppi_list) or ((p2, p1) in ppi_list):
-                        inf.write(p1 + "," + p2 + "\n")
+
+            for a, b in list(itertools.combinations_with_replacement(set(uniprot_list_in_pathway),2)):
+               if ((a, b) in ppi_list) or ((b, a) in ppi_list): 
+                   inf.write(a + "," + b + "\n")
+                        
             print("End search interaction in pathway: " + pathway_id)
             print(uniprot_list_in_pathway)
             
