@@ -23,10 +23,7 @@ class PathwayConverter:
             self.database[pathway_id].append(gene_id)
 
     def get_gene_id_list(self, pathway_id):
-        if pathway_id in self.database:
-            return self.database[pathway_id]
-        else:
-            return []
+        return self.database.get(pathway_id, [])
             
 def kegg_to_uniprot(kegg_id):
     # KEGG のhsa:~のidをuniprotに変換してくれる
@@ -38,7 +35,7 @@ def kegg_to_uniprot(kegg_id):
         a = line.split("\t")
         if a[0].lower() == kegg_id:
             result.append(a[2])
-    return result
+            return result
         
 def kegg_list_to_uniprot(kegg_id_list):
     result = {}
@@ -48,4 +45,3 @@ def kegg_list_to_uniprot(kegg_id_list):
         time.sleep(0.1)
     return result
 
-    

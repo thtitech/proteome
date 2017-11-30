@@ -47,6 +47,9 @@ def main(args):
                     chain_list = uniprot_converter.get_chain_list()
                     # if use filter, plaese change filter_chain()
                     chain_list = list(filter(lambda c: filter_chain(c), chain_list))
+                    # filtering chain_list
+                    chain_list = filter_chain_list(chain_list)
+                    
                     for chain in chain_list:
                         column = []
                         column.append(pathway_id)
@@ -54,6 +57,7 @@ def main(args):
                         column.append(uniprot_id)
                         column.append(chain.chain_name)
                         sf.write(",".join(column) + "\n")
+                        
                 time.sleep(1)
             print("End search structure in pathway: " + pathway_id)
             print("Start search interaction in pathway: " + pathway_id)
@@ -67,15 +71,48 @@ def main(args):
             
 def filter_chain(chain):
     # chain is Chain object, please refer chain.py
-    # if you can filter resolusion, resolution = -1 indicate this structure is not available with X-ray (ex. NMR or modeling ...)
-    return True
+    # if you can filter resolution, resolution = -1 indicate this structure is not available with X-ray (ex. NMR or modeling ...)
+    return ((chain.resolution != -1) and (chain.get_length() >= 30))
+
+def filter_chain_list(chain_list):
+    # sort by resolution -> get longer chain when overraping
+    tmp_list = sorted(chain_list, key = lambda x: x.resolution)
+    result = []
+    for target in tmp_list:
+        if len(result) == 0:
+            result.append(target)
+            continue
+        if all(list(map(lambda x: not is_overrap_chain(target, x), result))):
+            result.append(target)
+    return result
+
+def is_overrap_chain(c1, c2):
+    # c1, c2 is chain instance
+    # chain1: longer, chain2: shorter
+    chain1 = c1
+    chain2 = c2
+    if chain1.get_length() < chain2.get_length():
+        chain1 = c2
+        chain2 = c1
+    if (chain1.start_res > chain2.end_res) or (chain1.end_res < chain2.start_res):
+        return False
+    if (chain1.start_res <= chain2.start_res) and (chain1.end_res >= chain2.end_res):
+        return True
+    # set overrap
+    overrap = 0
+    if chain1.start_res >= chain2.start_res:
+        overrap = chain2.end_res - chain1.start_res
+
+    if chain1.end_res <= chain2.end_res:
+        overrap = chain2.start_res - chain1.end_res
+
+    if overrap / chain2.get_length() > 0.8:
+        return True
+    else:
+        return False
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
         sys.stderr.write("Usage: python main.py [inputfile] [structure outputfile] [interaction outputfile]\n")
         sys.exit(0)
     main(sys.argv)
-
-
-
-    

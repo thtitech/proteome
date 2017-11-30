@@ -50,7 +50,7 @@ class UniprotHTMLParser(HTMLParser):
             for c in chains:
                 self.chain_name_list.append(self.current_pdb_id + "_" + c)
         if self.is_useful and (self.count_td == 5):
-            start, end = data.split("-")
+            start, end = list(map(int, data.split("-")))
             self.position_map[self.current_pdb_id] = (start, end)
         
     def handle_endtag(self, tag):
