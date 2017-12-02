@@ -30,5 +30,4 @@ class HintParser:
             next(reader)
             for row in reader:
                 result.append((row[0], row[1]))
-        print(result)
         return result

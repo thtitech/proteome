@@ -34,6 +34,9 @@ def main(args):
             print("Start search pathway: " + pathway_id)
             uniprot_list_in_pathway = []
             count = 0
+            all_chain_num = 0
+            uniprot_num_with_no_chain = 0
+            print("number of KEGG ID: " + str(len(kegg_id_list)))
             for kegg_id in kegg_id_list:
                 count += 1
                 if count % 10 == 0:
@@ -41,11 +44,16 @@ def main(args):
                 # get uniprot for each kegg id
                 uniprot_id_list = kegg_to_uniprot(kegg_id)
                 for uniprot_id in uniprot_id_list:
-                    uniprot_list_in_pathway.append(uniprot_id)
+                    # uniprot_list_in_pathway.append(uniprot_id) if contain no chain ID
                     uniprot_converter = UniprotConverter(uniprot_id)
                     # use network connection
                     # convert to pdb id chain from
                     chain_list = uniprot_converter.get_chain_list()
+                    if len(chain_list) == 0:
+                        uniprot_num_with_no_chain += 1
+                    else:
+                        uniprot_list_in_pathway.append(uniprot_id)
+                    all_chain_num += len(chain_list)
                     # if use filter, plaese change filter_chain()
                     chain_list = list(filter(lambda c: filter_chain(c), chain_list))
                     # filtering chain_list
@@ -60,6 +68,9 @@ def main(args):
                         sf.write(",".join(column) + "\n")
                         
                 time.sleep(1)
+            print("number of uniprot id: " + str(len(uniprot_list_in_pathway)))
+            print("number of uniprot id with no structure" + str(uniprot_num_with_no_chain))
+            print("number of all chain id: " + str(all_chain_num))
             print("End search structure in pathway: " + pathway_id)
             print("Start search interaction in pathway: " + pathway_id)
             inf.write("#" + pathway_id + "\n")
@@ -69,7 +80,6 @@ def main(args):
                    inf.write(a + "," + b + "\n")
                         
             print("End search interaction in pathway: " + pathway_id)
-            print(uniprot_list_in_pathway)
             
 def filter_chain(chain):
     # chain is Chain object, please refer chain.py
