@@ -65,6 +65,9 @@ def main(args):
                         column.append(kegg_id)
                         column.append(uniprot_id)
                         column.append(chain.chain_name)
+                        column.append(str(chain.start_res))
+                        column.append(str(chain.end_res))
+                        column.append(str(chain.resolution))
                         sf.write(",".join(column) + "\n")
                         
                 time.sleep(1)

@@ -3,6 +3,7 @@ import csv
 PREPPI1 = "preppi_1.txt"
 PREPPI2 = "preppi_2.txt"
 HINT = "hint.txt"
+DIP = "dip.txt"
 
 class PreppiParser:
     def get_ppi_list(self):
@@ -31,3 +32,4 @@ class HintParser:
             for row in reader:
                 result.append((row[0], row[1]))
         return result
+
