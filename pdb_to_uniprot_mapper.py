@@ -1,7 +1,6 @@
 import requests
 from xml.etree.ElementTree import fromstring
 
-pdb_id = '4hhb.A'
 pdb_mapping_url = 'http://www.rcsb.org/pdb/rest/das/pdb_uniprot_mapping/alignment'
 uniprot_url = 'http://www.uniprot.org/uniprot/{}.xml'
 
@@ -32,4 +31,3 @@ def map_pdb_to_uniprot(pdb_id):
         'uniprot_name': uniprot_name
     }
 
-print (map_pdb_to_uniprot(pdb_id))

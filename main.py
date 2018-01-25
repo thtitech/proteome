@@ -5,6 +5,7 @@ from ppi_parser import *
 import sys
 import time
 import itertools
+from datetime import datetime
 
 ### Output Style
 # pathway, kegg_id, uniprot_id, pdbid
@@ -28,6 +29,7 @@ def main(args):
     ppi_list = hint_parser.get_ppi_list()
     
     with open(input_file, "r") as f, open(structure_output_file, "w") as sf, open(interaction_output_file, "w") as inf:
+        sf.write(datetime.now().strftime("%Y/%m/%d %H:%M:%S") + "\n")
         for line in f:
             pathway_id = line.strip()
             kegg_id_list = kegg_converter.get_gene_id_list(pathway_id)
